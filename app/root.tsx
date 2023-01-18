@@ -1,3 +1,4 @@
+import { json } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/node";
 import styles from "./styles/app.css";
 import {
@@ -7,11 +8,26 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
+  useOutletContext,
 } from "@remix-run/react";
+import { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+import type { LoaderArgs } from "@remix-run/node";
+
+export const loader = async ({}: LoaderArgs) => {
+  const env = {
+    SUPABASE_URL: process.env.SUPABASE_URL!,
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
+  };
+  return json({ env });
+};
 
 export function links() {
   return [{ rel: "stylesheet", href: styles }];
 }
+
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "Chatter",
@@ -19,6 +35,11 @@ export const meta: MetaFunction = () => ({
 });
 
 export default function App() {
+  const { env } = useLoaderData<typeof loader>();
+  const [supabase] = useState(() =>
+    createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
+  );
+
   return (
     <html lang="en">
       <head>
@@ -26,7 +47,7 @@ export default function App() {
         <Meta />
       </head>
       <body>
-        <Outlet />
+        <Outlet context={} />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
