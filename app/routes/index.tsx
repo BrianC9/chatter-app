@@ -1,3 +1,11 @@
+import { useLoaderData } from "@remix-run/react";
+import supabase from "utils/supabase";
+export async function loader() {
+  const { data } = await supabase.from("messages").select();
+  return { data };
+}
 export default function Index() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  const { data } = useLoaderData();
+  console.log(data, null, 2);
+  return <pre>{JSON.stringify(data)}</pre>;
 }
