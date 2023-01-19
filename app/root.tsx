@@ -15,6 +15,14 @@ import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 import type { LoaderArgs } from "@remix-run/node";
+import type { Database } from "db_types";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+type TypedSupabaseClient = SupabaseClient<Database>;
+
+export type SupabaseOutletContext = {
+  supabase: TypedSupabaseClient;
+};
 
 export const loader = async ({}: LoaderArgs) => {
   const env = {
@@ -37,7 +45,7 @@ export const meta: MetaFunction = () => ({
 export default function App() {
   const { env } = useLoaderData<typeof loader>();
   const [supabase] = useState(() =>
-    createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
+    createClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
   );
 
   return (
@@ -47,7 +55,7 @@ export default function App() {
         <Meta />
       </head>
       <body>
-        <Outlet context={} />
+        <Outlet context={{ supabase }} />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

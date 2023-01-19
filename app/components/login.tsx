@@ -1,10 +1,14 @@
+import { useOutletContext } from "@remix-run/react";
+import type { Provider } from "@supabase/supabase-js";
 import React from "react";
-import supabase from "utils/supabase.server";
+import type { SupabaseOutletContext } from "~/root";
 
 function Login() {
-  const handleLogin = async () => {
+  const { supabase } = useOutletContext<SupabaseOutletContext>();
+
+  const handleLogin = async (provider: Provider) => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: "github",
+      provider: provider,
     });
     if (error) {
       console.log(error);
@@ -23,9 +27,20 @@ function Login() {
       <button
         className="bg-emerald-300 px-2 rounded-md m-2
     "
-        onClick={handleLogin}
+        onClick={() => {
+          handleLogin("github");
+        }}
       >
-        Login
+        Login Github
+      </button>
+      <button
+        className="bg-emerald-300 px-2 rounded-md m-2
+    "
+        onClick={() => {
+          handleLogin("google");
+        }}
+      >
+        Login Google
       </button>
       <button className="bg-emerald-300 px-2 rounded-md" onClick={handleLogout}>
         Logout
