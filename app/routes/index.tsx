@@ -10,23 +10,29 @@ export async function loader({ request }: LoaderArgs) {
   const response = new Response();
   const supabase = createServerSupabase({ request, response });
   const { data } = await supabase.from("messages").select();
-  console.log(response.headers);
   return json({ messages: data ?? [] }, { headers: response.headers });
 }
 
 export default function Index() {
   const [domLoaded, setDomLoaded] = useState(false);
   useEffect(() => {
+    console.log("render");
     setDomLoaded(true);
   }, []);
   const { messages } = useLoaderData<typeof loader>();
-  console.log(messages);
+  //console.log(messages);
   return (
     <>
       {domLoaded && (
         <>
           <Login />
-          <pre>{JSON.stringify(messages, null, 2)}</pre>
+          {messages.length > 0 ? (
+            <pre>{JSON.stringify(messages, null, 2)}</pre>
+          ) : (
+            <p className="text-amber-500">
+              You have to login to see the messages!
+            </p>
+          )}
         </>
       )}
     </>

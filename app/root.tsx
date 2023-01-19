@@ -8,19 +8,21 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRevalidator,
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import createServerSupabase from "utils/supabase.server";
+import { createBrowserClient } from "@supabase/auth-helpers-remix";
 
 import type { MetaFunction } from "@remix-run/node";
 import type { LoaderArgs } from "@remix-run/node";
 import type { Database } from "db_types";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { createBrowserClient } from "@supabase/auth-helpers-remix";
-type TypedSupabaseClient = SupabaseClient<Database>;
+import type { Session, SupabaseClient } from "@supabase/supabase-js";
 
+type TypedSupabaseClient = SupabaseClient<Database>;
 export type SupabaseOutletContext = {
   supabase: TypedSupabaseClient;
+  session: Session;
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -31,6 +33,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const response = new Response();
   const supabase = createServerSupabase({ request, response });
+
+  // console.log({ supabaseOnLoader: supabase });
 
   const {
     data: { session },
@@ -51,16 +55,27 @@ export const meta: MetaFunction = () => ({
 
 export default function App() {
   const { env, session } = useLoaderData<typeof loader>();
-  console.log({ server: session });
   const [supabase] = useState(() =>
     createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
   );
+  const revalidator = useRevalidator();
+  // console.log({ server: session }, { supabaseOnComponent: supabase });
+
+  const serverAccessToken = session?.access_token;
 
   useEffect(() => {
-    supabase.auth
-      .getSession()
-      .then((session) => console.log({ client: session }));
-  }, []);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      // console.log({ eventOnAuthStateChange: event });
+      if (session?.access_token !== serverAccessToken) {
+        revalidator.revalidate();
+      }
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase, serverAccessToken, revalidator]);
 
   return (
     <html lang="en">
@@ -69,7 +84,7 @@ export default function App() {
         <Meta />
       </head>
       <body>
-        <Outlet context={{ supabase }} />
+        <Outlet context={{ supabase, session }} />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
