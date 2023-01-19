@@ -1,5 +1,4 @@
 import { json } from "@remix-run/node";
-import type { MetaFunction } from "@remix-run/node";
 import styles from "./styles/app.css";
 import {
   Links,
@@ -9,27 +8,35 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  useOutletContext,
 } from "@remix-run/react";
-import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
+import createServerSupabase from "utils/supabase.server";
 
+import type { MetaFunction } from "@remix-run/node";
 import type { LoaderArgs } from "@remix-run/node";
 import type { Database } from "db_types";
 import type { SupabaseClient } from "@supabase/supabase-js";
-
+import { createBrowserClient } from "@supabase/auth-helpers-remix";
 type TypedSupabaseClient = SupabaseClient<Database>;
 
 export type SupabaseOutletContext = {
   supabase: TypedSupabaseClient;
 };
 
-export const loader = async ({}: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const env = {
     SUPABASE_URL: process.env.SUPABASE_URL!,
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
   };
-  return json({ env });
+
+  const response = new Response();
+  const supabase = createServerSupabase({ request, response });
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  return json({ env, session }, { headers: response.headers });
 };
 
 export function links() {
@@ -43,10 +50,17 @@ export const meta: MetaFunction = () => ({
 });
 
 export default function App() {
-  const { env } = useLoaderData<typeof loader>();
+  const { env, session } = useLoaderData<typeof loader>();
+  console.log({ server: session });
   const [supabase] = useState(() =>
-    createClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
+    createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
   );
+
+  useEffect(() => {
+    supabase.auth
+      .getSession()
+      .then((session) => console.log({ client: session }));
+  }, []);
 
   return (
     <html lang="en">

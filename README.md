@@ -1,6 +1,6 @@
 # Chatter
 
-A real-time chat application
+A real-time chat application with persistence for the messages
 
 ## 🕹 Features
 
