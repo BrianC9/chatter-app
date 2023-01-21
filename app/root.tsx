@@ -83,7 +83,7 @@ export default function App() {
         <Links />
         <Meta />
       </head>
-      <body>
+      <body className="bg-gradient-to-r from-green-200 to-purple-300 w-full flex items-center content-centercontent-center h-screen">
         <Outlet context={{ supabase, session }} />
         <ScrollRestoration />
         <Scripts />
