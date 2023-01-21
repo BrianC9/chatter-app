@@ -16,7 +16,7 @@ import { createBrowserClient } from "@supabase/auth-helpers-remix";
 
 import type { MetaFunction } from "@remix-run/node";
 import type { LoaderArgs } from "@remix-run/node";
-import type { Database } from "db_types";
+import type { Database } from "types/db_types";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 
 type TypedSupabaseClient = SupabaseClient<Database>;
@@ -83,7 +83,7 @@ export default function App() {
         <Links />
         <Meta />
       </head>
-      <body className="bg-gradient-to-r from-green-200 to-purple-300 w-full flex items-center content-centercontent-center h-screen">
+      <body className="bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-sky-300 via-cyan-500 to-rose-300 w-full flex items-center content-centercontent-center h-screen">
         <Outlet context={{ supabase, session }} />
         <ScrollRestoration />
         <Scripts />
@@ -92,3 +92,7 @@ export default function App() {
     </html>
   );
 }
+
+/**
+ * bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-sky-500 via-cyan-700 to-rose-300
+ */

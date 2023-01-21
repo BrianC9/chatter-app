@@ -27,24 +27,27 @@ export default function Index() {
         <>
           <Login />
           {messages.length > 0 ? (
-            <div className="bg-slate-500 w-1/2 flex flex-col content-center justify-center items-center ">
-              {messages.map((msg) => (
-                <div key={msg.id} className="bg-white my-2 w-1/2">
-                  <p>{msg.id}</p>
-                  <p>{msg.content}</p>
-                  <p>{new Date(msg.created_at).toUTCString()}</p>
-                </div>
-              ))}
-            </div>
+            <>
+              <div className="bg-slate-400 rounded-lg w-1/2 flex flex-col content-center justify-center items-center ">
+                {messages.map((msg) => (
+                  <div key={msg.id} className="bg-white my-2 w-1/2">
+                    <p>{msg.id}</p>
+                    <p>{msg.content}</p>
+                    <p>{new Date(msg.created_at).toUTCString()}</p>
+                    <p>{msg?.user_id}</p>
+                  </div>
+                ))}
+              </div>
+              <Form method="post" className="">
+                <input type="text" name="message" id="" />
+                <button type="submit">send</button>
+              </Form>
+            </>
           ) : (
-            <p className="bg-slate-500">
-              You have to login to see the messages!
+            <p className="bg-slate-500 p-3 rounded-md m-2 text-slate-100">
+              You have to be logged in to see the messages!
             </p>
           )}
-          <Form method="post" className="">
-            <input type="text" name="message" id="" />
-            <button type="submit">send</button>
-          </Form>
         </>
       )}
     </div>

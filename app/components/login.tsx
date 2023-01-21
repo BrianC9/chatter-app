@@ -27,7 +27,7 @@ function Login() {
       {session === null && (
         <>
           <button
-            className="bg-emerald-300 px-2 rounded-md m-2
+            className="bg-slate-500 px-2 rounded-md m-2 text-slate-100
     "
             onClick={() => {
               handleLogin("github");
@@ -36,7 +36,7 @@ function Login() {
             Login Github
           </button>
           <button
-            className="bg-emerald-300 px-2 rounded-md m-2
+            className="bg-slate-500 px-2 rounded-md m-2 text-slate-100
     "
             onClick={() => {
               handleLogin("google");
@@ -48,7 +48,7 @@ function Login() {
       )}
       {session !== null && (
         <button
-          className="bg-emerald-300 px-2 rounded-md m-2"
+          className="bg-slate-500 px-2 rounded-md m-2 text-slate-100"
           onClick={handleLogout}
         >
           Logout
