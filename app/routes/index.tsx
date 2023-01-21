@@ -12,7 +12,6 @@ export async function action({ request }: ActionArgs) {
   const supabase = createServerSupabase({ request, response });
 
   const formData = await request.formData();
-  const rawData = Object.fromEntries(formData);
 
   const { message } = Object.fromEntries(formData);
 
@@ -24,7 +23,9 @@ export async function action({ request }: ActionArgs) {
   const { error } = await supabase
     .from("messages")
     .insert({ content: String(message) });
-
+  if (error) {
+    return error;
+  }
   return json(null, { headers: response.headers });
 }
 
