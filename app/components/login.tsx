@@ -1,11 +1,9 @@
 import { useOutletContext } from "@remix-run/react";
 import type { Provider } from "@supabase/supabase-js";
 import type { SupabaseOutletContext } from "~/root";
-import type { LoaderArgs } from "@remix-run/node";
 
 function Login() {
   const { supabase, session } = useOutletContext<SupabaseOutletContext>();
-  console.log({ session: session });
   const handleLogin = async (provider: Provider) => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider,
@@ -48,7 +46,7 @@ function Login() {
       )}
       {session !== null && (
         <button
-          className="bg-slate-500 px-2 rounded-md m-2 text-slate-100"
+          className="bg-rose-500 px-4 py-2rounded-md m-2 text-slate-100"
           onClick={handleLogout}
         >
           Logout
