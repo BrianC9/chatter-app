@@ -83,7 +83,7 @@ export default function App() {
         <Links />
         <Meta />
       </head>
-      <body className="bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-sky-300 via-cyan-500 to-rose-300 w-full flex items-center content-centercontent-center h-screen">
+      <body className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-700 via-gray-900 to-black w-full flex items-center justify-center content-center h-screen">
         <Outlet context={{ supabase, session }} />
         <ScrollRestoration />
         <Scripts />

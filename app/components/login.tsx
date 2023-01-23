@@ -46,7 +46,7 @@ function Login() {
       )}
       {session !== null && (
         <button
-          className="bg-rose-500 px-4 py-2rounded-md m-2 text-slate-100"
+          className="bg-rose-500 px-4 py-2rounded-md m-2 text-slate-100 rounded-lg"
           onClick={handleLogout}
         >
           Logout
