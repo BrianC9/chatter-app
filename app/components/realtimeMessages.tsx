@@ -10,15 +10,15 @@ export default function RealtimeMessages({
 }) {
   const [messages, setMessages] = useState(serverMessages);
   const { session, supabase } = useOutletContext<SupabaseOutletContext>();
-  const messageEl = useRef(null);
+  const messageEl = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (messageEl) {
-      messageEl.current.addEventListener("DOMNodeInserted", (event) => {
+    if (messageEl.current != null) {
+      messageEl.current.addEventListener("DOMNodeInserted", (event: any) => {
         const { currentTarget: target } = event;
-        target.scroll({ top: target.scrollHeight, behavior: "smooth" });
+        target.scroll({ top: target?.scrollHeight, behavior: "smooth" });
       });
     }
-  }, [messages]);
+  }, []);
   useEffect(() => {
     setMessages(serverMessages);
   }, [serverMessages]);
