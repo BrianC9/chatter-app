@@ -10,7 +10,7 @@ export default function RealtimeMessages({
 }) {
   const [messages, setMessages] = useState(serverMessages);
   const { session, supabase } = useOutletContext<SupabaseOutletContext>();
-  const messageEl = useRef<>(null);
+  const messageEl = useRef(null);
   useEffect(() => {
     if (messageEl) {
       messageEl.current.addEventListener("DOMNodeInserted", (event) => {
