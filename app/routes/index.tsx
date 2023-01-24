@@ -11,6 +11,23 @@ import createServerSupabase from "utils/supabase.server";
 import type { SupabaseOutletContext } from "~/root";
 import type { LoaderArgs, ActionArgs } from "@remix-run/node";
 import RealtimeMessages from "~/components/realtimeMessages";
+import githubIcon from "../../public/github.webp";
+import googleIcon from "../../public/google.webp";
+
+export function links() {
+  return [
+    {
+      rel: "preload",
+      href: githubIcon,
+      as: "image",
+    },
+    {
+      rel: "preload",
+      href: googleIcon,
+      as: "image",
+    },
+  ];
+}
 
 export async function action({ request }: ActionArgs) {
   console.log("submit al form");
@@ -43,61 +60,61 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function Index() {
-  const [domLoaded, setDomLoaded] = useState(false);
   const { session } = useOutletContext<SupabaseOutletContext>();
   let transition = useTransition();
-  let isAdding =
+
+  let isSubmitting =
     transition.state === "submitting" &&
     transition.submission.formData.get("_action") === "create";
+
   let formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
-    if (!isAdding) {
+    if (!isSubmitting) {
       formRef.current?.reset();
     }
-  }, [isAdding]);
+  }, [isSubmitting]);
   console.log({ session: session?.user.id });
-  useEffect(() => {
-    setDomLoaded(true);
-  }, []);
+
   const { messages } = useLoaderData<typeof loader>();
 
   //console.log(messages);
   return (
-    <div className="container flex flex-col content-center h-screen justify-center items-center w-full h-screen">
-      {domLoaded && (
+    <div className="container flex flex-col content-center justify-center items-center w-full h-screen">
+      <Login githubIcon={githubIcon} googleIcon={googleIcon} />
+      {messages.length > 0 ? (
         <>
-          <Login />
-          {messages.length > 0 ? (
-            <>
-              <RealtimeMessages serverMessages={messages} />
+          <RealtimeMessages serverMessages={messages} />
 
-              <Form method="post" ref={formRef} noValidate className="mt-2">
-                <input
-                  type="text"
-                  name="message"
-                  required={true}
-                  autoFocus={true}
-                  placeholder="Enter a message..."
-                  className="rounded-l-xl px-4 py-1 outline-none"
-                />
+          <Form
+            method="post"
+            ref={formRef}
+            noValidate
+            className="m-0 md:flex md:w-1/2"
+          >
+            <input
+              type="text"
+              name="message"
+              required={true}
+              autoFocus={true}
+              placeholder="Enter a message..."
+              className="rounded-bl-xl px-4 py-1 outline-none md:w-full "
+            />
 
-                <button
-                  className="bg-green-200 px-4 py-1 rounded-r-xl"
-                  type="submit"
-                  name="_action"
-                  value="create"
-                  disabled={isAdding}
-                >
-                  {isAdding ? "Sending" : "Send"}
-                </button>
-              </Form>
-            </>
-          ) : (
-            <p className="bg-slate-500 p-3 rounded-md m-2 text-slate-100 text-center">
-              You have to be logged in to see the messages!
-            </p>
-          )}
+            <button
+              className="bg-green-200 px-6 py-1 rounded-br-xl "
+              type="submit"
+              name="_action"
+              value="create"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Sending" : "Send"}
+            </button>
+          </Form>
         </>
+      ) : (
+        <p className="bg-slate-500 p-3 rounded-md m-2 text-slate-100 text-center">
+          You have to be logged in to see the messages!
+        </p>
       )}
     </div>
   );

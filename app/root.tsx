@@ -34,8 +34,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   const response = new Response();
   const supabase = createServerSupabase({ request, response });
 
-  // console.log({ supabaseOnLoader: supabase });
-
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -44,7 +42,22 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export function links() {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: styles },
+    {
+      rel: "preconnect",
+      href: "https://fonts.googleapis.com",
+    },
+    {
+      rel: "preconnect",
+      href: "https://fonts.gstatic.com",
+      crossOrigin: "true",
+    },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap",
+    },
+  ];
 }
 
 export const meta: MetaFunction = () => ({
@@ -83,7 +96,7 @@ export default function App() {
         <Links />
         <Meta />
       </head>
-      <body className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-700 via-gray-800 to-black ">
+      <body className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-700 via-gray-800 to-black flex justify-center content-center items-center font-roboto">
         <Outlet context={{ supabase, session }} />
         <ScrollRestoration />
         <Scripts />
@@ -92,7 +105,3 @@ export default function App() {
     </html>
   );
 }
-
-/**
- * bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-sky-500 via-cyan-700 to-rose-300
- */

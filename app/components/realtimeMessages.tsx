@@ -2,15 +2,17 @@ import { useOutletContext } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 import type { Database } from "types/db_types";
 import type { SupabaseOutletContext } from "~/root";
-type Message = Database["public"]["Tables"]["messages"]["Row"];
+export type Message = Database["public"]["Tables"]["messages"]["Row"];
 export default function RealtimeMessages({
   serverMessages,
 }: {
   serverMessages: Message[];
 }) {
   const [messages, setMessages] = useState(serverMessages);
+  const [showDetails, setShowdetails] = useState(false);
   const { session, supabase } = useOutletContext<SupabaseOutletContext>();
   const messageEl = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     if (messageEl.current != null) {
       messageEl.current.addEventListener("DOMNodeInserted", (event: any) => {
@@ -19,9 +21,11 @@ export default function RealtimeMessages({
       });
     }
   }, []);
+
   useEffect(() => {
     setMessages(serverMessages);
   }, [serverMessages]);
+
   useEffect(() => {
     const channel = supabase
       .channel("*")
@@ -58,8 +62,10 @@ export default function RealtimeMessages({
         >
           <p>{msg.id}</p>
           <p>{msg.content}</p>
-          <p>{new Date(msg.created_at).toUTCString()}</p>
-          <p className="font-semibold">{msg?.user_id}</p>
+          <p>{new Date(msg.created_at).toLocaleString()}</p>
+          <p className="font-semibold">
+            From {session?.user.id === msg.user_id ? "You" : msg?.user_id}
+          </p>
         </div>
       ))}
     </div>
