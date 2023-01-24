@@ -1,4 +1,9 @@
-import { Form, useLoaderData, useOutletContext } from "@remix-run/react";
+import {
+  Form,
+  useLoaderData,
+  useOutletContext,
+  useTransition,
+} from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 import { json, Response } from "@remix-run/node";
 import Login from "~/components/login";
@@ -11,7 +16,6 @@ export async function action({ request }: ActionArgs) {
   console.log("submit al form");
   const response = new Response();
   const supabase = createServerSupabase({ request, response });
-
   const formData = await request.formData();
 
   const { message } = Object.fromEntries(formData);
@@ -41,6 +45,16 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
   const [domLoaded, setDomLoaded] = useState(false);
   const { session } = useOutletContext<SupabaseOutletContext>();
+  let transition = useTransition();
+  let isAdding =
+    transition.state === "submitting" &&
+    transition.submission.formData.get("_action") === "create";
+  let formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (!isAdding) {
+      formRef.current?.reset();
+    }
+  }, [isAdding]);
   console.log({ session: session?.user.id });
   useEffect(() => {
     setDomLoaded(true);
@@ -49,7 +63,7 @@ export default function Index() {
 
   //console.log(messages);
   return (
-    <div className="container flex flex-col content-center h-screen justify-center items-center">
+    <div className="container flex flex-col content-center h-screen justify-center items-center w-full h-screen">
       {domLoaded && (
         <>
           <Login />
@@ -57,7 +71,7 @@ export default function Index() {
             <>
               <RealtimeMessages serverMessages={messages} />
 
-              <Form method="post" noValidate className="mt-2">
+              <Form method="post" ref={formRef} noValidate className="mt-2">
                 <input
                   type="text"
                   name="message"
@@ -66,11 +80,15 @@ export default function Index() {
                   placeholder="Enter a message..."
                   className="rounded-l-xl px-4"
                 />
+
                 <button
-                  type="submit"
                   className="bg-green-400 px-4 rounded-r-xl"
+                  type="submit"
+                  name="_action"
+                  value="create"
+                  disabled={isAdding}
                 >
-                  send
+                  {isAdding ? "Sending" : "send"}
                 </button>
               </Form>
             </>
