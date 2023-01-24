@@ -44,7 +44,7 @@ export default function RealtimeMessages({
 
   return (
     <div
-      className=" bg-white bg-opacity-20  shadow-xl  border-none lg:w-1/2 h-[35rem] flex flex-col  lg:max-h-[35rem]  overflow-y-auto items-center px-5 py-2 "
+      className=" bg-white bg-opacity-20  shadow-xl  border-none lg:w-1/2 h-[35rem] flex flex-col  lg:max-h-[35rem]  overflow-y-auto items-center px-5 py-2 scrollbar scroll-smooth	"
       ref={messageEl}
     >
       {messages.map((msg) => (
@@ -52,8 +52,8 @@ export default function RealtimeMessages({
           key={msg.id}
           className={` my-2 lg:w-1/2 mb-4 p-2  ${
             session?.user.id === msg.user_id
-              ? "bg-blue-200 self-end rounded-tl-xl text-right"
-              : "self-start bg-blue-50 rounded-tr-xl text-left"
+              ? "bg-sky-200 self-end rounded-tl-xl text-right"
+              : "self-start bg-sky-50 rounded-tr-xl text-left"
           } `}
         >
           <p>{msg.id}</p>

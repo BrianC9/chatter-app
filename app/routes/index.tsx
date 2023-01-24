@@ -78,17 +78,17 @@ export default function Index() {
                   required={true}
                   autoFocus={true}
                   placeholder="Enter a message..."
-                  className="rounded-l-xl px-4"
+                  className="rounded-l-xl px-4 py-1 outline-none"
                 />
 
                 <button
-                  className="bg-green-400 px-4 rounded-r-xl"
+                  className="bg-green-200 px-4 py-1 rounded-r-xl"
                   type="submit"
                   name="_action"
                   value="create"
                   disabled={isAdding}
                 >
-                  {isAdding ? "Sending" : "send"}
+                  {isAdding ? "Sending" : "Send"}
                 </button>
               </Form>
             </>
