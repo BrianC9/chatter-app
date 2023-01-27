@@ -14,36 +14,36 @@ export interface Database {
           content: string
           created_at: string
           id: string
-          user_id: string | null
+          isDeleted: boolean | null
+          user_id: string
         }
         Insert: {
           content: string
           created_at?: string
           id?: string
-          user_id?: string | null
+          isDeleted?: boolean | null
+          user_id?: string
         }
         Update: {
           content?: string
           created_at?: string
           id?: string
-          user_id?: string | null
+          isDeleted?: boolean | null
+          user_id?: string
         }
       }
       profiles: {
         Row: {
-          description: string | null
           id: string
-          usernname: string | null
+          raw_user_meta_data: Json | null
         }
         Insert: {
-          description?: string | null
           id: string
-          usernname?: string | null
+          raw_user_meta_data?: Json | null
         }
         Update: {
-          description?: string | null
           id?: string
-          usernname?: string | null
+          raw_user_meta_data?: Json | null
         }
       }
     }

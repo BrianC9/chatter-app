@@ -2,14 +2,30 @@ import { useOutletContext } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 import type { Database } from "types/db_types";
 import type { SupabaseOutletContext } from "~/root";
-export type Message = Database["public"]["Tables"]["messages"]["Row"];
+import SingleMessage from "./singleMessage";
+export type MessageRaw = Database["public"]["Tables"]["messages"]["Row"];
+export interface Message extends MessageRaw {
+  user_info: {
+    raw_user_meta_data: {
+      iss: string;
+      sub: string;
+      name: string;
+      email: string;
+      full_name: string;
+      user_name: string;
+      avatar_url: string;
+      provider_id: string;
+      email_verified: boolean;
+      preferred_username: string;
+    };
+  };
+}
 export default function RealtimeMessages({
   serverMessages,
 }: {
   serverMessages: Message[];
 }) {
   const [messages, setMessages] = useState(serverMessages);
-  const [showDetails, setShowdetails] = useState(false);
   const { session, supabase } = useOutletContext<SupabaseOutletContext>();
   const messageEl = useRef<HTMLDivElement | null>(null);
 
@@ -39,34 +55,22 @@ export default function RealtimeMessages({
           }
         }
       )
+
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
   }, [supabase, messages, setMessages]);
-
   return (
     <div
-      className=" bg-white bg-opacity-20  shadow-xl  border-none lg:w-1/2 h-[35rem] flex flex-col  lg:max-h-[35rem]  overflow-y-auto items-center px-5 py-2 scrollbar scroll-smooth	"
+      id="Messages-container"
+      className=" backdrop-blur-md bg-white/30 flex flex-col w-1/2 border-none h-[35rem]  lg:max-h-[35rem]  overflow-y-auto  px-5 py-2 scrollbar scroll-smooth	"
       ref={messageEl}
     >
+      {messages.length === 0 && <p>There are no messages</p>}
       {messages.map((msg) => (
-        <div
-          key={msg.id}
-          className={` my-2 lg:w-1/2 mb-4 p-2  ${
-            session?.user.id === msg.user_id
-              ? "bg-sky-200 self-end rounded-tl-xl text-right"
-              : "self-start bg-sky-50 rounded-tr-xl text-left"
-          } `}
-        >
-          <p>{msg.id}</p>
-          <p>{msg.content}</p>
-          <p>{new Date(msg.created_at).toLocaleString()}</p>
-          <p className="font-semibold">
-            From {session?.user.id === msg.user_id ? "You" : msg?.user_id}
-          </p>
-        </div>
+        <SingleMessage key={msg.id} msg={msg} session={session} />
       ))}
     </div>
   );

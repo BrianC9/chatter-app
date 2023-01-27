@@ -12,21 +12,21 @@ function Login({ githubIcon, googleIcon }: LoginProps) {
       provider: provider,
     });
     if (error) {
-      console.error(error);
+      console.log(error);
     }
   };
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      console.error(error);
+      console.log(error);
     }
   };
-
+  console.log(session);
   return (
-    <div>
+    <>
       {session === null && (
-        <>
+        <div className="w-1/2 flex flex-col mx-auto">
           <div
             className="bg-slate-500 px-4 py-2 rounded-md m-2 text-slate-100 hover:bg-slate-600 hover:cursor-pointer"
             onClick={() => {
@@ -53,17 +53,36 @@ function Login({ githubIcon, googleIcon }: LoginProps) {
             />
             <span className="font-bold">Login with Google</span>
           </div>
-        </>
+        </div>
       )}
       {session !== null && (
-        <button
-          className="bg-red-400 px-4 py-1  m-2 text-slate-100 rounded-lg font-bold"
-          onClick={handleLogout}
+        <div
+          id="Login-Succesfull"
+          className="flex gap-2 items-center justify-between bg-white bg-opacity-20 md:p-4 p-2 rounded-t-xl border-b-4 border-indigo-500 "
         >
-          Logout
-        </button>
+          <button
+            className="bg-red-400 px-4 py-1  m-2 text-slate-100 rounded-lg font-bold self-end "
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+          <div className="flex items-center gap-2 text-white  font-semibold ">
+            <p className="invisible sm:visible">
+              {session.user.email?.split("@")[0]}
+            </p>
+            <img
+              src={
+                session.user.app_metadata.provider === "github"
+                  ? session.user.user_metadata?.avatar_url
+                  : "https://picsum.photos/200"
+              }
+              alt="avatar"
+              className="max-w-[2.5rem] rounded-full block"
+            />
+          </div>
+        </div>
       )}
-    </div>
+    </>
   );
 }
 
