@@ -1,14 +1,8 @@
-import {
-  Form,
-  useLoaderData,
-  useOutletContext,
-  useTransition,
-} from "@remix-run/react";
-import { useEffect, useRef, useState } from "react";
+import { Form, useLoaderData, useTransition } from "@remix-run/react";
+import { useEffect, useRef } from "react";
 import { json, Response } from "@remix-run/node";
 import Login from "~/components/login";
 import createServerSupabase from "utils/supabase.server";
-import type { SupabaseOutletContext } from "~/root";
 import type { LoaderArgs, ActionArgs } from "@remix-run/node";
 import RealtimeMessages from "~/components/realtimeMessages";
 import githubIcon from "../../public/github.webp";
@@ -69,39 +63,32 @@ export default function Index() {
   return (
     <div
       id="index"
-      className=" flex flex-col content-center justify-center items-center w-full h-screen "
+      className="px-4 py-10 sm:p-20 mx-auto flex-col content-center justify-center items-center max-w-xl "
     >
       <Login githubIcon={githubIcon} googleIcon={googleIcon} />
       {messages.length > 0 ? (
         <>
           <RealtimeMessages serverMessages={messages} />
-          <div className="w-1/2">
-            <Form
-              method="post"
-              ref={formRef}
-              noValidate
-              className="m-0 w-full flex "
-            >
-              <input
-                type="text"
-                name="message"
-                required={true}
-                autoFocus={true}
-                placeholder="Enter a message..."
-                className="rounded-bl-xl px-4 py-1 outline-none  "
-              />
+          <Form method="post" ref={formRef} noValidate>
+            <input
+              type="text"
+              name="message"
+              required={true}
+              autoFocus={true}
+              placeholder="Enter a message..."
+              className="rounded-bl-xl px-4 py-1 outline-none w-4/5 "
+            />
 
-              <button
-                className="bg-green-200 px-6 py-1 rounded-br-xl "
-                type="submit"
-                name="_action"
-                value="create"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Sending" : "Send"}
-              </button>
-            </Form>
-          </div>
+            <button
+              className="bg-green-200 px-6 py-1 rounded-br-xl w-1/5 hover:bg-green-500 "
+              type="submit"
+              name="_action"
+              value="create"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Sending" : "Send"}
+            </button>
+          </Form>
         </>
       ) : (
         <p className="bg-slate-500 p-3 rounded-md m-2 text-slate-100 text-center">

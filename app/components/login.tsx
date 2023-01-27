@@ -25,8 +25,11 @@ function Login({ githubIcon, googleIcon }: LoginProps) {
   console.log(session);
   return (
     <>
-      {session === null && (
-        <div className="w-1/2 flex flex-col mx-auto">
+      {session === null ? (
+        <div
+          id="Sign-up"
+          className="w-full max-w-96 flex flex-col justify-center items-center content-center"
+        >
           <div
             className="bg-slate-500 px-4 py-2 rounded-md m-2 text-slate-100 hover:bg-slate-600 hover:cursor-pointer"
             onClick={() => {
@@ -54,11 +57,10 @@ function Login({ githubIcon, googleIcon }: LoginProps) {
             <span className="font-bold">Login with Google</span>
           </div>
         </div>
-      )}
-      {session !== null && (
+      ) : (
         <div
           id="Login-Succesfull"
-          className="flex gap-2 items-center justify-between bg-white bg-opacity-20 md:p-4 p-2 rounded-t-xl border-b-4 border-indigo-500 "
+          className="flex gap-2 items-center justify-between bg-white/20 md:p-4 p-2 rounded-t-xl border-b-white border-b-2 spacing-x-28 min-w-xl "
         >
           <button
             className="bg-red-400 px-4 py-1  m-2 text-slate-100 rounded-lg font-bold self-end "

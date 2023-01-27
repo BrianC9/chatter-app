@@ -65,13 +65,16 @@ export default function RealtimeMessages({
   return (
     <div
       id="Messages-container"
-      className=" backdrop-blur-md bg-white/30 flex flex-col w-1/2 border-none h-[35rem]  lg:max-h-[35rem]  overflow-y-auto  px-5 py-2 scrollbar scroll-smooth	"
+      className="  bg-white/20 flex flex-col  overflow-y-auto  px-5 py-2 scrollbar scroll-smooth  h-96"
       ref={messageEl}
     >
-      {messages.length === 0 && <p>There are no messages</p>}
-      {messages.map((msg) => (
-        <SingleMessage key={msg.id} msg={msg} session={session} />
-      ))}
+      {messages.length === 0 ? (
+        <p>There are no messages</p>
+      ) : (
+        messages.map((msg) => (
+          <SingleMessage key={msg.id} msg={msg} session={session} />
+        ))
+      )}
     </div>
   );
 }

@@ -8,7 +8,7 @@ export default function SingleMessage({ msg, session }: PropsMessage) {
   return (
     <div
       id="Single-Message"
-      className={` max-w-1/2  ${
+      className={` ${
         session?.user.id === msg.user_id ? " self-end " : "self-start "
       } `}
     >
