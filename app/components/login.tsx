@@ -22,7 +22,6 @@ function Login({ githubIcon, googleIcon }: LoginProps) {
       console.log(error);
     }
   };
-  console.log(session);
   return (
     <>
       {session === null ? (
